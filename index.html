@@ -3,51 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guardianes del Alimento - Reto Pleno</title>
+    <title>Guardianes del Alimento - Menú en la Nube</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         :root { --azul: #2A58AD; --amarillo: #FFD700; --verde: #4CAF50; --rojo: #e74c3c; --blanco: #FFFFFF; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Poppins', sans-serif; background-color: #F4F7F6; color: #333; }
-        .app-container { max-width: 900px; margin: 20px auto; background: var(--blanco); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; min-height: 90vh; }
-        header { background-color: var(--azul); color: var(--blanco); padding: 30px; text-align: center; border-bottom: 5px solid var(--amarillo); }
-        .screen { padding: 40px; display: none; animation: fadeIn 0.5s ease; }
+        body { font-family: 'Poppins', sans-serif; background-color: #F4F7F6; margin: 0; }
+        .app-container { max-width: 800px; margin: 20px auto; background: var(--blanco); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        header { background-color: var(--azul); color: white; padding: 25px; text-align: center; border-bottom: 5px solid var(--amarillo); }
+        .screen { padding: 30px; display: none; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .hidden { display: none !important; }
-
-        /* Misiones */
-        .grid-proyectos { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .grid-p { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
         .card-p { background: #fff; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; border: 2px solid #eee; transition: 0.3s; }
-        .card-p:hover { border-color: var(--azul); transform: translateY(-5px); }
-
-        /* Calculadora */
-        .food-item { border: 2px solid #eee; margin: 10px 0; padding: 15px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .card-p:hover { border-color: var(--azul); transform: translateY(-3px); }
+        .food-item { border: 2px solid #eee; margin: 8px 0; padding: 15px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; }
         .food-item.selected { border-color: var(--rojo); background: #fdf2f2; color: var(--rojo); }
-        .results-box { margin-top: 20px; padding: 20px; border-radius: 15px; background: #fff3f3; border: 1px solid var(--rojo); color: #c0392b; }
-
-        .btn { border: none; padding: 18px; border-radius: 35px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1.1rem; color: white; transition: 0.3s; }
-        .btn-azul { background: var(--azul); }
-        .btn-verde { background: var(--verde); }
-        .btn-rojo { background: var(--rojo); }
-
-        /* Diploma */
-        #diploma-area { background: white; padding: 50px; border: 10px double var(--amarillo); text-align: center; }
-        .feedback-error { text-align: center; padding: 20px; }
+        .btn { border: none; padding: 18px; border-radius: 35px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; color: white; font-size: 1.1rem; }
+        .btn-v { background: var(--verde); } .btn-a { background: var(--azul); } .btn-r { background: var(--rojo); }
+        #diploma-area { background: white; padding: 40px; border: 10px double var(--amarillo); text-align: center; }
+        .hidden { display: none !important; }
+        .loading { text-align: center; color: var(--azul); font-weight: bold; padding: 20px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <header><h1>BOTAR LA COMIDA<br><span style="color: var(--amarillo)">NO ES JUEGO DE NIÑOS</span></h1></header>
+    <header><h1>RETO GUARDIANES<br><span style="color: var(--amarillo)">DEL ALIMENTO</span></h1></header>
 
     <div id="screen-mision" class="screen active">
-        <h2 style="text-align: center;">Selecciona tu Proyecto de Vida:</h2>
-        <div class="grid-proyectos">
+        <h2 style="text-align: center; margin-bottom: 20px;">Tu Proyecto de Vida:</h2>
+        <div class="grid-p">
             <div class="card-p" onclick="startApp('Observadores')"><i class="fas fa-eye fa-2x"></i><br><strong>Observadores</strong></div>
             <div class="card-p" onclick="startApp('Innovadores')"><i class="fas fa-lightbulb fa-2x"></i><br><strong>Innovadores</strong></div>
             <div class="card-p" onclick="startApp('Creadores')"><i class="fas fa-paint-brush fa-2x"></i><br><strong>Creadores</strong></div>
@@ -59,106 +46,101 @@
 
     <div id="screen-calc" class="screen">
         <h2 id="titulo-mision"></h2>
-        <p style="margin-bottom: 20px;">Indica con honestidad: ¿Qué dejaste en el plato hoy?</p>
-        
-        <div class="food-item" id="p" onclick="toggleF('p')"><span>🍗 Proteína</span><i class="fas fa-times-circle hidden"></i></div>
-        <div class="food-item" id="a" onclick="toggleF('a')"><span>🍚 Arroz/Pasta</span><i class="fas fa-times-circle hidden"></i></div>
-        <div class="food-item" id="v" onclick="toggleF('v')"><span>🥗 Verduras</span><i class="fas fa-times-circle hidden"></i></div>
-        
-        <div id="calc-results" class="results-box hidden">
-            <h3>⚠️ Impacto por Desperdicio:</h3>
-            <div id="res-text"></div>
-        </div>
-
-        <button id="main-action-btn" class="btn btn-verde" onclick="checkLogic()">¡Terminé todo mi almuerzo!</button>
-        <p id="msg-hint" style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: #666;">Solo los Guardianes que terminan su plato reciben diploma.</p>
+        <p style="margin-bottom: 15px; color: #666;">Selecciona lo que <strong>no terminaste</strong> hoy:</p>
+        <div id="loader" class="loading"><i class="fas fa-sync fa-spin"></i> Cargando menú de hoy...</div>
+        <div id="menu-container"></div>
+        <button id="btn-final" class="btn btn-v" onclick="validar()">¡Mi plato está limpio! ✅</button>
     </div>
 
-    <div id="screen-fail" class="screen">
-        <div class="feedback-error">
-            <i class="fas fa-heart-broken fa-4x" style="color: var(--rojo)"></i>
-            <h2 style="margin: 20px 0;">¡Mañana será un mejor día!</h2>
-            <p>Hoy no podemos otorgarte el diploma porque cada bocado que se bota es una oportunidad perdida para el planeta y tu salud.</p>
-            <p style="margin-top: 15px; font-weight: bold;">¡Tu reto para mañana es dejar el plato limpio!</p>
-            <button class="btn btn-azul" onclick="location.reload()">Acepto el Reto para Mañana</button>
-        </div>
+    <div id="screen-fail" class="screen" style="text-align: center;">
+        <i class="fas fa-heart-broken fa-4x" style="color: var(--rojo)"></i>
+        <h2>¡Casi lo logras!</h2>
+        <p>Al botar comida no podemos entregarte el diploma. Mañana es una nueva oportunidad para ser un Guardián.</p>
+        <button class="btn btn-a" onclick="location.reload()">Acepto el Reto para Mañana</button>
     </div>
 
-    <div id="screen-diploma" class="screen">
+    <div id="screen-success" class="screen">
         <div id="diploma-area">
-            <i class="fas fa-award" style="font-size: 4rem; color: var(--amarillo); margin-bottom: 20px;"></i>
-            <h2 style="font-size: 2.5rem;">DIPLOMA DE GUARDIÁN</h2>
-            <p style="font-size: 1.2rem; margin: 20px 0;">Certificamos que en el proyecto de vida:</p>
-            <h3 id="user-mision-label" style="color: var(--azul); font-size: 2rem; margin-bottom: 20px;"></h3>
-            <p style="font-weight: bold;">"EN ESTE PLATO NO SE DESPERDICIA ESPERANZA"</p>
+            <i class="fas fa-award fa-4x" style="color: var(--amarillo)"></i>
+            <h2>DIPLOMA DE HONOR</h2>
+            <p>Reconocemos al estudiante en el Proyecto de Vida:</p>
+            <h3 id="label-mision" style="color: var(--azul); font-size: 2rem;"></h3>
+            <p style="margin-top: 15px;"><strong>"EN ESTE PLATO NO SE DESPERDICIA ESPERANZA"</strong></p>
         </div>
-        <button class="btn btn-azul" onclick="descargar()">Descargar mi Diploma (JPEG) <i class="fas fa-download"></i></button>
-        <button class="btn btn-verde" style="margin-top: 10px;" onclick="location.reload()">Finalizar</button>
+        <button class="btn btn-a" onclick="descargar()">Descargar Diploma (JPEG)</button>
+        <button class="btn btn-v" onclick="location.reload()">Finalizar</button>
     </div>
 </div>
 
 <script>
-    let m = ''; let foods = new Set();
-    const info = {
-        p: "Botar la proteína desperdicia el agua y el esfuerzo del campo colombiano.",
-        a: "Sin el arroz, pierdes la energía que tu cerebro necesita para aprender.",
-        v: "Las verduras son tu escudo de salud; no las dejes en la basura."
-    };
+    // PEGA AQUÍ TU ENLACE DE PUBLICACIÓN CSV DE GOOGLE SHEETS
+    const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE0QCAzCC5Rg_Bf9cHHfh5dH2kf6iOfnW6UIowWLf_yS4f4Pk-GYKoMSvFLukQe2rF6IZtS-6Ucxfq/pub?output=csv"; 
 
-    function startApp(tipo) { 
-        m = tipo; 
-        document.getElementById('titulo-mision').innerText = "Misión: " + m; 
-        document.getElementById('user-mision-label').innerText = m; 
-        showScreen('screen-calc'); 
+    let mision = '';
+    let desperdicio = 0;
+
+    async function cargarMenu() {
+        try {
+            const response = await fetch(URL_SHEET);
+            const data = await response.text();
+            const items = data.split(/\r?\n/).filter(line => line.trim() !== "");
+            
+            const container = document.getElementById('menu-container');
+            container.innerHTML = "";
+            document.getElementById('loader').classList.add('hidden');
+
+            items.forEach((item, idx) => {
+                container.innerHTML += `
+                    <div class="food-item" id="f-${idx}" onclick="toggleF(${idx})">
+                        <span>${item}</span>
+                        <i class="fas fa-times-circle hidden"></i>
+                    </div>`;
+            });
+        } catch (e) {
+            document.getElementById('loader').innerHTML = "❌ Error al cargar menú. Revisa la conexión.";
+        }
     }
 
-    function showScreen(id) { 
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
-        document.getElementById(id).classList.add('active'); 
+    function startApp(nombre) {
+        mision = nombre;
+        document.getElementById('titulo-mision').innerText = "Misión: " + nombre;
+        document.getElementById('label-mision').innerText = nombre;
+        showS('screen-calc');
+        cargarMenu();
     }
-    
+
     function toggleF(id) {
-        const el = document.getElementById(id); const icon = el.querySelector('i');
-        const btn = document.getElementById('main-action-btn');
-
-        if(foods.has(id)) { 
-            foods.delete(id); 
-            el.classList.remove('selected'); 
-            icon.classList.add('hidden'); 
-        } else { 
-            foods.add(id); 
-            el.classList.add('selected'); 
-            icon.classList.remove('hidden'); 
-        }
+        const el = document.getElementById(`f-${id}`);
+        el.classList.toggle('selected');
+        el.querySelector('i').classList.toggle('hidden');
         
-        const resBox = document.getElementById('calc-results');
-        const resText = document.getElementById('res-text');
-
-        if(foods.size > 0) {
-            resBox.classList.remove('hidden');
-            resText.innerHTML = Array.from(foods).map(f => `<p>• ${info[f]}</p>`).join('');
-            btn.innerText = "Registrar mi compromiso de mejora";
-            btn.className = "btn btn-rojo";
-        } else { 
-            resBox.classList.add('hidden'); 
-            btn.innerText = "¡Terminé todo mi almuerzo!";
-            btn.className = "btn btn-verde";
+        const count = document.querySelectorAll('.food-item.selected').length;
+        const btn = document.getElementById('btn-final');
+        if(count > 0) {
+            btn.innerText = "Registrar mi desperdicio";
+            btn.className = "btn btn-r";
+        } else {
+            btn.innerText = "¡Mi plato está limpio! ✅";
+            btn.className = "btn btn-v";
         }
     }
 
-    function checkLogic() {
-        if(foods.size > 0) {
-            showScreen('screen-fail'); // No hay diploma
-        } else {
-            showScreen('screen-diploma'); // Solo si el plato está limpio
-        }
+    function validar() {
+        const count = document.querySelectorAll('.food-item.selected').length;
+        if(count > 0) showS('screen-fail');
+        else showS('screen-success');
+    }
+
+    function showS(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
 
     function descargar() {
         html2canvas(document.getElementById('diploma-area')).then(canvas => {
             const link = document.createElement('a');
-            link.download = 'Diploma-Guardian-Alimento.jpg';
-            link.href = canvas.toDataURL("image/jpeg", 0.9);
+            link.download = 'Diploma-Guardian.jpg';
+            link.href = canvas.toDataURL("image/jpeg");
             link.click();
         });
     }
