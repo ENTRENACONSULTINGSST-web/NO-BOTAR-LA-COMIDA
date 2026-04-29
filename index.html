@@ -3,28 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guardianes del Alimento - Menú en la Nube</title>
+    <title>Guardianes del Alimento - Impacto Real</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
-        :root { --azul: #2A58AD; --amarillo: #FFD700; --verde: #4CAF50; --rojo: #e74c3c; --blanco: #FFFFFF; }
+        :root { --azul: #2A58AD; --amarillo: #FFD700; --verde: #4CAF50; --rojo: #e74c3c; --blanco: #FFFFFF; --celeste: #e3f2fd; }
         body { font-family: 'Poppins', sans-serif; background-color: #F4F7F6; margin: 0; }
         .app-container { max-width: 800px; margin: 20px auto; background: var(--blanco); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
         header { background-color: var(--azul); color: white; padding: 25px; text-align: center; border-bottom: 5px solid var(--amarillo); }
-        .screen { padding: 30px; display: none; }
+        .screen { padding: 30px; display: none; animation: fadeIn 0.5s ease; }
         .screen.active { display: block; }
-        .grid-p { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-        .card-p { background: #fff; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; border: 2px solid #eee; transition: 0.3s; }
-        .card-p:hover { border-color: var(--azul); transform: translateY(-3px); }
-        .food-item { border: 2px solid #eee; margin: 8px 0; padding: 15px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; }
-        .food-item.selected { border-color: var(--rojo); background: #fdf2f2; color: var(--rojo); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Calculadora Estilizada */
+        .food-item { border: 2px solid #eee; margin: 10px 0; padding: 15px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .food-item.selected { border-color: var(--rojo); background: #fdf2f2; }
+        
+        /* Caja de Impacto Reincorporada */
+        .impact-box { margin-top: 20px; padding: 20px; border-radius: 15px; background: var(--celeste); border: 1px solid #bbdefb; color: #1565c0; }
+        .impact-box h4 { margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        .impact-detail { font-size: 0.9rem; margin-bottom: 10px; border-left: 3px solid var(--rojo); padding-left: 10px; }
+
         .btn { border: none; padding: 18px; border-radius: 35px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; color: white; font-size: 1.1rem; }
         .btn-v { background: var(--verde); } .btn-a { background: var(--azul); } .btn-r { background: var(--rojo); }
         #diploma-area { background: white; padding: 40px; border: 10px double var(--amarillo); text-align: center; }
         .hidden { display: none !important; }
-        .loading { text-align: center; color: var(--azul); font-weight: bold; padding: 20px; }
     </style>
 </head>
 <body>
@@ -34,101 +39,102 @@
 
     <div id="screen-mision" class="screen active">
         <h2 style="text-align: center; margin-bottom: 20px;">Tu Proyecto de Vida:</h2>
-        <div class="grid-p">
-            <div class="card-p" onclick="startApp('Observadores')"><i class="fas fa-eye fa-2x"></i><br><strong>Observadores</strong></div>
-            <div class="card-p" onclick="startApp('Innovadores')"><i class="fas fa-lightbulb fa-2x"></i><br><strong>Innovadores</strong></div>
-            <div class="card-p" onclick="startApp('Creadores')"><i class="fas fa-paint-brush fa-2x"></i><br><strong>Creadores</strong></div>
-            <div class="card-p" onclick="startApp('Exploradores')"><i class="fas fa-compass fa-2x"></i><br><strong>Exploradores</strong></div>
-            <div class="card-p" onclick="startApp('Aventureros')"><i class="fas fa-map-marked-alt fa-2x"></i><br><strong>Aventureros</strong></div>
-            <div class="card-p" onclick="startApp('Navegantes')"><i class="fas fa-ship fa-2x"></i><br><strong>Navegantes</strong></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+            <div class="card-p" style="text-align:center; padding:15px; border:1px solid #ddd; border-radius:10px; cursor:pointer;" onclick="startApp('Navegantes')"><i class="fas fa-ship fa-2x"></i><br>Navegantes</div>
+            <div class="card-p" style="text-align:center; padding:15px; border:1px solid #ddd; border-radius:10px; cursor:pointer;" onclick="startApp('Exploradores')"><i class="fas fa-compass fa-2x"></i><br>Exploradores</div>
+            <div class="card-p" style="text-align:center; padding:15px; border:1px solid #ddd; border-radius:10px; cursor:pointer;" onclick="startApp('Aventureros')"><i class="fas fa-map-marked-alt fa-2x"></i><br>Aventureros</div>
         </div>
     </div>
 
     <div id="screen-calc" class="screen">
         <h2 id="titulo-mision"></h2>
-        <p style="margin-bottom: 15px; color: #666;">Selecciona lo que <strong>no terminaste</strong> hoy:</p>
-        <div id="loader" class="loading"><i class="fas fa-sync fa-spin"></i> Cargando menú de hoy...</div>
+        <p>¿Qué dejaste hoy en tu plato?</p>
         <div id="menu-container"></div>
+        
+        <div id="impact-section" class="impact-box hidden">
+            <h4><i class="fas fa-chart-line"></i> Tu Impacto:</h4>
+            <div id="impact-list"></div>
+            <p style="font-size: 0.8rem; margin-top: 10px;"><i>*Estimación basada en huella hídrica y déficit nutricional.</i></p>
+        </div>
+
         <button id="btn-final" class="btn btn-v" onclick="validar()">¡Mi plato está limpio! ✅</button>
     </div>
 
-    <div id="screen-fail" class="screen" style="text-align: center;">
+    <div id="screen-fail" class="screen" style="text-align:center;">
         <i class="fas fa-heart-broken fa-4x" style="color: var(--rojo)"></i>
         <h2>¡Casi lo logras!</h2>
-        <p>Al botar comida no podemos entregarte el diploma. Mañana es una nueva oportunidad para ser un Guardián.</p>
-        <button class="btn btn-a" onclick="location.reload()">Acepto el Reto para Mañana</button>
+        <p>Al botar comida desperdicias recursos. Mañana inténtalo de nuevo.</p>
+        <button class="btn btn-a" onclick="location.reload()">Acepto el Reto</button>
     </div>
 
     <div id="screen-success" class="screen">
-        <div id="diploma-area">
-            <i class="fas fa-award fa-4x" style="color: var(--amarillo)"></i>
-            <h2>DIPLOMA DE HONOR</h2>
-            <p>Reconocemos al estudiante en el Proyecto de Vida:</p>
-            <h3 id="label-mision" style="color: var(--azul); font-size: 2rem;"></h3>
-            <p style="margin-top: 15px;"><strong>"EN ESTE PLATO NO SE DESPERDICIA ESPERANZA"</strong></p>
-        </div>
-        <button class="btn btn-a" onclick="descargar()">Descargar Diploma (JPEG)</button>
-        <button class="btn btn-v" onclick="location.reload()">Finalizar</button>
+        <div id="diploma-area"><h2>DIPLOMA DE HONOR</h2><h3 id="label-mision"></h3></div>
+        <button class="btn btn-a" onclick="location.reload()">Finalizar</button>
     </div>
 </div>
 
 <script>
-    // PEGA AQUÍ TU ENLACE DE PUBLICACIÓN CSV DE GOOGLE SHEETS
-    const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE0QCAzCC5Rg_Bf9cHHfh5dH2kf6iOfnW6UIowWLf_yS4f4Pk-GYKoMSvFLukQe2rF6IZtS-6Ucxfq/pub?output=csv"; 
+    const URL_SHEET = "TU_ENLACE_CSV_AQUÍ"; 
+    
+    // Diccionario de sensibilización reincorporado
+    const IMPACTOS = {
+        proteina: "🥩 **Impacto:** Pérdida de aminoácidos esenciales y aprox. 1500L de agua por porción.",
+        cereal: "🍚 **Impacto:** Menos energía para tu cerebro y desperdicio de cultivos de ciclo corto.",
+        vegetal: "🥗 **Impacto:** Déficit de fibra y vitaminas. Afectas la biodiversidad del suelo.",
+        bebida: "🥤 **Impacto:** Desperdicio de azúcares naturales y huella hídrica en procesamiento."
+    };
 
-    let mision = '';
-    let desperdicio = 0;
+    let itemsMenu = [];
 
     async function cargarMenu() {
-        try {
-            const response = await fetch(URL_SHEET);
-            const data = await response.text();
-            const items = data.split(/\r?\n/).filter(line => line.trim() !== "");
-            
-            const container = document.getElementById('menu-container');
-            container.innerHTML = "";
-            document.getElementById('loader').classList.add('hidden');
+        const response = await fetch(URL_SHEET);
+        const data = await response.text();
+        itemsMenu = data.split(/\r?\n/).filter(line => line.trim() !== "");
+        renderMenu();
+    }
 
-            items.forEach((item, idx) => {
-                container.innerHTML += `
-                    <div class="food-item" id="f-${idx}" onclick="toggleF(${idx})">
-                        <span>${item}</span>
-                        <i class="fas fa-times-circle hidden"></i>
-                    </div>`;
-            });
-        } catch (e) {
-            document.getElementById('loader').innerHTML = "❌ Error al cargar menú. Revisa la conexión.";
+    function renderMenu() {
+        const container = document.getElementById('menu-container');
+        container.innerHTML = itemsMenu.map((item, idx) => `
+            <div class="food-item" id="f-${idx}" onclick="toggleF(${idx}, '${item}')">
+                <span>${item}</span>
+                <i class="fas fa-times-circle hidden"></i>
+            </div>
+        `).join('');
+    }
+
+    function toggleF(id, nombre) {
+        document.getElementById(`f-${id}`).classList.toggle('selected');
+        document.getElementById(`f-${id}`).querySelector('i').classList.toggle('hidden');
+        
+        const seleccionados = document.querySelectorAll('.food-item.selected');
+        const impactBox = document.getElementById('impact-section');
+        const impactList = document.getElementById('impact-list');
+
+        if(seleccionados.length > 0) {
+            impactBox.classList.remove('hidden');
+            document.getElementById('btn-final').className = "btn btn-r";
+            document.getElementById('btn-final').innerText = "Ver mi Compromiso";
+            
+            // Lógica de sensibilización: Detectar tipo de alimento
+            let htmlImpacto = "";
+            if(nombre.toLowerCase().includes("pollo") || nombre.toLowerCase().includes("carne")) htmlImpacto += `<div class="impact-detail">${IMPACTOS.proteina}</div>`;
+            if(nombre.toLowerCase().includes("arroz") || nombre.toLowerCase().includes("papa")) htmlImpacto += `<div class="impact-detail">${IMPACTOS.cereal}</div>`;
+            if(nombre.toLowerCase().includes("ensalada") || nombre.toLowerCase().includes("verdura")) htmlImpacto += `<div class="impact-detail">${IMPACTOS.vegetal}</div>`;
+            
+            impactList.innerHTML = htmlImpacto || `<div class="impact-detail">⚠️ Estás desperdiciando alimento vital del menú.</div>`;
+        } else {
+            impactBox.classList.add('hidden');
+            document.getElementById('btn-final').className = "btn btn-v";
+            document.getElementById('btn-final').innerText = "¡Mi plato está limpio! ✅";
         }
     }
 
-    function startApp(nombre) {
-        mision = nombre;
-        document.getElementById('titulo-mision').innerText = "Misión: " + nombre;
-        document.getElementById('label-mision').innerText = nombre;
+    function startApp(m) {
+        document.getElementById('titulo-mision').innerText = "Misión: " + m;
+        document.getElementById('label-mision').innerText = m;
         showS('screen-calc');
         cargarMenu();
-    }
-
-    function toggleF(id) {
-        const el = document.getElementById(`f-${id}`);
-        el.classList.toggle('selected');
-        el.querySelector('i').classList.toggle('hidden');
-        
-        const count = document.querySelectorAll('.food-item.selected').length;
-        const btn = document.getElementById('btn-final');
-        if(count > 0) {
-            btn.innerText = "Registrar mi desperdicio";
-            btn.className = "btn btn-r";
-        } else {
-            btn.innerText = "¡Mi plato está limpio! ✅";
-            btn.className = "btn btn-v";
-        }
-    }
-
-    function validar() {
-        const count = document.querySelectorAll('.food-item.selected').length;
-        if(count > 0) showS('screen-fail');
-        else showS('screen-success');
     }
 
     function showS(id) {
@@ -136,13 +142,9 @@
         document.getElementById(id).classList.add('active');
     }
 
-    function descargar() {
-        html2canvas(document.getElementById('diploma-area')).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'Diploma-Guardian.jpg';
-            link.href = canvas.toDataURL("image/jpeg");
-            link.click();
-        });
+    function validar() {
+        if(document.querySelectorAll('.food-item.selected').length > 0) showS('screen-fail');
+        else showS('screen-success');
     }
 </script>
 </body>
