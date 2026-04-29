@@ -9,140 +9,509 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
-        :root { --azul: #2A58AD; --amarillo: #FFD700; --verde: #4CAF50; --rojo: #e74c3c; --blanco: #FFFFFF; }
-        body { font-family: 'Poppins', sans-serif; background-color: #F4F7F6; margin: 0; }
-        .app-container { max-width: 800px; margin: 20px auto; background: var(--blanco); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-        header { background-color: var(--azul); color: white; padding: 25px; text-align: center; border-bottom: 5px solid var(--amarillo); }
-        .screen { padding: 30px; display: none; }
+        :root { 
+            --azul: #2A58AD; 
+            --amarillo: #FFD700; 
+            --verde: #4CAF50; 
+            --rojo: #e74c3c; 
+            --blanco: #FFFFFF; 
+            --gris-claro: #F4F7F6;
+        }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--gris-claro); 
+            margin: 0; 
+            padding: 20px;
+        }
+        
+        .app-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: var(--blanco); 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+        }
+        
+        header { 
+            background-color: var(--azul); 
+            color: white; 
+            padding: 25px; 
+            text-align: center; 
+            border-bottom: 5px solid var(--amarillo); 
+        }
+        
+        .screen { 
+            padding: 30px; 
+            display: none; 
+            animation: fadeIn 0.3s ease;
+        }
+        
         .screen.active { display: block; }
-        .grid-p { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-        .card-p { background: #fff; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; border: 2px solid #eee; transition: 0.3s; }
-        .card-p:hover { border-color: var(--azul); transform: translateY(-3px); }
-        .food-item { border: 2px solid #eee; margin: 8px 0; padding: 15px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; }
-        .food-item.selected { border-color: var(--rojo); background: #fdf2f2; color: var(--rojo); }
-        .btn { border: none; padding: 18px; border-radius: 35px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; color: white; font-size: 1.1rem; }
-        .btn-v { background: var(--verde); } .btn-a { background: var(--azul); } .btn-r { background: var(--rojo); }
-        #diploma-area { background: white; padding: 40px; border: 10px double var(--amarillo); text-align: center; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .grid-p { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 15px; 
+            margin-top: 20px;
+        }
+        
+        .card-p { 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 15px; 
+            text-align: center; 
+            cursor: pointer; 
+            border: 2px solid #eee; 
+            transition: all 0.3s;
+        }
+        
+        .card-p:hover { 
+            border-color: var(--azul); 
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-p i { 
+            color: var(--azul);
+            margin-bottom: 10px;
+        }
+        
+        .food-item { 
+            border: 2px solid #eee; 
+            margin: 8px 0; 
+            padding: 15px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .food-item:hover {
+            border-color: var(--azul);
+            transform: translateX(5px);
+        }
+        
+        .food-item.selected { 
+            border-color: var(--rojo); 
+            background: #fdf2f2; 
+        }
+        
+        .food-item.selected span {
+            color: var(--rojo);
+            font-weight: 500;
+        }
+        
+        .btn { 
+            border: none; 
+            padding: 18px; 
+            border-radius: 35px; 
+            width: 100%; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 15px; 
+            color: white; 
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-v { background: var(--verde); } 
+        .btn-a { background: var(--azul); } 
+        .btn-r { background: var(--rojo); }
+        
+        #diploma-area { 
+            background: white; 
+            padding: 40px; 
+            border: 10px double var(--amarillo); 
+            text-align: center; 
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
         .hidden { display: none !important; }
-        .loading { text-align: center; color: var(--azul); font-weight: bold; padding: 20px; }
+        
+        .loading { 
+            text-align: center; 
+            color: var(--azul); 
+            font-weight: bold; 
+            padding: 20px; 
+        }
+        
+        .alert-box {
+            background: #FFF3E0;
+            border-left: 4px solid var(--rojo);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .screen { padding: 20px; }
+            .card-p { padding: 15px; }
+            .card-p i { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <header><h1>RETO GUARDIANES<br><span style="color: var(--amarillo)">DEL ALIMENTO</span></h1></header>
+    <header>
+        <h1>RETO GUARDIANES<br><span style="color: var(--amarillo)">DEL ALIMENTO</span></h1>
+        <p style="margin-top: 8px; font-size: 0.9rem;"><i class="fas fa-cloud-upload-alt"></i> Menú actualizado desde la nube</p>
+    </header>
 
+    <!-- Pantalla 1: Selección de misión (6 títulos originales) -->
     <div id="screen-mision" class="screen active">
-        <h2 style="text-align: center; margin-bottom: 20px;">Tu Proyecto de Vida:</h2>
+        <h2 style="text-align: center;">🎯 Tu Proyecto de Vida</h2>
+        <p style="text-align: center; color: #666;">Elige tu nivel y conviértete en Guardián del Alimento</p>
         <div class="grid-p">
-            <div class="card-p" onclick="startApp('Observadores')"><i class="fas fa-eye fa-2x"></i><br><strong>Observadores</strong></div>
-            <div class="card-p" onclick="startApp('Innovadores')"><i class="fas fa-lightbulb fa-2x"></i><br><strong>Innovadores</strong></div>
-            <div class="card-p" onclick="startApp('Creadores')"><i class="fas fa-paint-brush fa-2x"></i><br><strong>Creadores</strong></div>
-            <div class="card-p" onclick="startApp('Exploradores')"><i class="fas fa-compass fa-2x"></i><br><strong>Exploradores</strong></div>
-            <div class="card-p" onclick="startApp('Aventureros')"><i class="fas fa-map-marked-alt fa-2x"></i><br><strong>Aventureros</strong></div>
-            <div class="card-p" onclick="startApp('Navegantes')"><i class="fas fa-ship fa-2x"></i><br><strong>Navegantes</strong></div>
+            <div class="card-p" onclick="startApp('Observadores')">
+                <i class="fas fa-eye fa-2x"></i><br>
+                <strong>Observadores</strong>
+                <p style="font-size: 0.8rem; margin-top: 5px;">5-7 años</p>
+            </div>
+            <div class="card-p" onclick="startApp('Innovadores')">
+                <i class="fas fa-lightbulb fa-2x"></i><br>
+                <strong>Innovadores</strong>
+                <p style="font-size: 0.8rem; margin-top: 5px;">8-10 años</p>
+            </div>
+            <div class="card-p" onclick="startApp('Creadores')">
+                <i class="fas fa-paint-brush fa-2x"></i><br>
+                <strong>Creadores</strong>
+                <p style="font-size: 0.8rem; margin-top: 5px;">11-13 años</p>
+            </div>
+            <div class="card-p" onclick="startApp('Exploradores')">
+                <i class="fas fa-compass fa-2x"></i><br>
+                <strong>Exploradores</strong>
+                <p style="font-size: 0.8rem; margin-top: 5px;">14-15 años</p>
+            </div>
+            <div class="card-p" onclick="startApp('Aventureros')">
+                <i class="fas fa-map-marked-alt fa-2x"></i><br>
+                <strong>Aventureros</strong>
+                <p style="font-size: 0.8rem; margin-top: 5px;">16-17 años</p>
+            </div>
+            <div class="card-p" onclick="startApp('Navegantes')">
+                <i class="fas fa-ship fa-2x"></i><br>
+                <strong>Navegantes</strong>
+                <p style="font-size: 0.8rem; margin-top: 5px;">18+ años</p>
+            </div>
         </div>
+        
+        <!-- Botón para profesores (personalizar menú) -->
+        <button onclick="showAdminConfig()" style="margin-top: 25px; background: #666; border: none; padding: 10px 20px; border-radius: 20px; color: white; cursor: pointer; width: auto; display: block; margin-left: auto; margin-right: auto;">
+            <i class="fas fa-chalkboard-teacher"></i> Panel Profesor
+        </button>
     </div>
 
+    <!-- Pantalla 2: Calculadora con menú dinámico -->
     <div id="screen-calc" class="screen">
-        <h2 id="titulo-mision"></h2>
-        <p style="margin-bottom: 15px; color: #666;">Selecciona lo que <strong>no terminaste</strong> hoy:</p>
-        <div id="loader" class="loading"><i class="fas fa-sync fa-spin"></i> Cargando menú de hoy...</div>
+        <h2 id="titulo-mision" style="color: var(--azul);"></h2>
+        <div class="alert-box" id="mensaje-motivador" style="display: none;">
+            <i class="fas fa-info-circle"></i> <span id="mensaje-texto"></span>
+        </div>
+        <p style="margin-bottom: 15px; color: #666;"><strong>✏️ Selecciona lo que NO terminaste hoy:</strong></p>
+        <div id="loader" class="loading"><i class="fas fa-sync fa-spin"></i> Cargando menú del día desde la nube...</div>
         <div id="menu-container"></div>
-        <button id="btn-final" class="btn btn-v" onclick="validar()">¡Mi plato está limpio! ✅</button>
+        
+        <!-- Sección de impacto educativo (se muestra solo si hay desperdicio) -->
+        <div id="impacto-educativo" style="display: none; margin-top: 20px; padding: 15px; background: #E3F2FD; border-radius: 15px;">
+            <h4><i class="fas fa-chart-line"></i> 🌍 Tu impacto al desperdiciar:</h4>
+            <div id="contenido-impacto"></div>
+        </div>
+        
+        <button id="btn-final" class="btn btn-v" onclick="validar()">
+            <i class="fas fa-check-circle"></i> ¡Mi plato está limpio! ✅
+        </button>
     </div>
 
+    <!-- Pantalla 3: Fracaso (NO recibe diploma) -->
     <div id="screen-fail" class="screen" style="text-align: center;">
         <i class="fas fa-heart-broken fa-4x" style="color: var(--rojo)"></i>
-        <h2>¡Casi lo logras!</h2>
-        <p>Al botar comida no podemos entregarte el diploma. Mañana es una nueva oportunidad para ser un Guardián.</p>
-        <button class="btn btn-a" onclick="location.reload()">Acepto el Reto para Mañana</button>
+        <h2>😔 ¡Casi lo logras!</h2>
+        <p>Has seleccionado <strong id="cantidad-desperdicio">0</strong> alimento(s) que no terminaste.</p>
+        <div style="background: #FFF3E0; padding: 15px; border-radius: 10px; margin: 15px 0;">
+            <i class="fas fa-lightbulb"></i> <strong>Para obtener el diploma debes:</strong>
+            <ul style="text-align: left; margin-top: 10px;">
+                <li>✅ Terminar TODOS los alimentos de tu plato</li>
+                <li>✅ Cero desperdicio · Cero excusas</li>
+                <li>✅ Valorar el trabajo campesino</li>
+            </ul>
+        </div>
+        <p><strong>Mañana es una nueva oportunidad para ser un Guardián del Alimento.</strong></p>
+        <button class="btn btn-a" onclick="location.reload()">
+            <i class="fas fa-redo-alt"></i> Acepto el Reto para Mañana
+        </button>
     </div>
 
+    <!-- Pantalla 4: Éxito (SÍ recibe diploma) -->
     <div id="screen-success" class="screen">
         <div id="diploma-area">
             <i class="fas fa-award fa-4x" style="color: var(--amarillo)"></i>
-            <h2>DIPLOMA DE HONOR</h2>
+            <h2>🏆 DIPLOMA DE HONOR 🏆</h2>
             <p>Reconocemos al estudiante en el Proyecto de Vida:</p>
             <h3 id="label-mision" style="color: var(--azul); font-size: 2rem;"></h3>
             <p style="margin-top: 15px;"><strong>"EN ESTE PLATO NO SE DESPERDICIA ESPERANZA"</strong></p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">🇨🇴 Por tu compromiso con el planeta y tu nutrición</p>
         </div>
-        <button class="btn btn-a" onclick="descargar()">Descargar Diploma (JPEG)</button>
-        <button class="btn btn-v" onclick="location.reload()">Finalizar</button>
+        <button class="btn btn-a" onclick="descargarDiploma()">
+            <i class="fas fa-download"></i> Descargar Diploma (JPEG)
+        </button>
+        <button class="btn btn-v" onclick="location.reload()">
+            <i class="fas fa-home"></i> Finalizar
+        </button>
     </div>
 </div>
 
 <script>
-    // PEGA AQUÍ TU ENLACE DE PUBLICACIÓN CSV DE GOOGLE SHEETS
-    const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE0QCAzCC5Rg_Bf9cHHfh5dH2kf6iOfnW6UIowWLf_yS4f4Pk-GYKoMSvFLukQe2rF6IZtS-6Ucxfq/pubhtml"; 
+    // ==================== CONFIGURACIÓN ====================
+    // ⭐ PEGA AQUÍ TU ENLACE DE PUBLICACIÓN CSV DE GOOGLE SHEETS ⭐
+    const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQE0QCAzCC5Rg_Bf9cHHfh5dH2kf6iOfnW6UIowWLf_yS4f4Pk-GYKoMSvFLukQe2rF6IZtS-6Ucxfq/pubhtml";
+    
+    // Diccionario de impactos educativos
+    const IMPACTOS = {
+        "proteina": { health: "💪 Pérdida de proteínas esenciales para tus músculos", env: "🐄 1,500 litros de agua desperdiciados" },
+        "carne": { health: "💪 Pérdida de aminoácidos para crecimiento", env: "🐄 Huella de carbono alta" },
+        "pollo": { health: "🍗 Menos proteína magra para tu cuerpo", env: "💧 1,200 litros de agua por porción" },
+        "pescado": { health: "🐟 Omega-3 perdido, importante para tu cerebro", env: "🌊 Impacto en ecosistemas marinos" },
+        "arroz": { health: "🧠 Carbohidratos perdidos = menos energía", env: "🍚 2,500 litros de agua por kg" },
+        "pasta": { health: "🍝 Energía para estudiar y jugar se pierde", env: "💧 Agua de cultivo desperdiciada" },
+        "ensalada": { health: "🥬 Vitaminas y fibra que protegen tu salud", env: "🌱 250 litros de agua por porción" },
+        "verdura": { health: "🥕 Escudo natural contra enfermedades", env: "🌿 Tierra y agua desperdiciadas" },
+        "fruta": { health: "🍊 Antioxidantes y potasio perdidos", env: "💧 180 litros de agua por fruta" },
+        "jugo": { health: "🥤 Vitaminas líquidas para tus defensas", env: "🍬 Azúcar y agua desperdiciados" }
+    };
+    
+    let misionActual = '';
+    let itemsMenuGlobal = [];
+    let adminMode = false;
 
-    let mision = '';
-    let desperdicio = 0;
-
+    // ==================== CARGAR MENÚ DESDE GOOGLE SHEETS ====================
     async function cargarMenu() {
+        const loader = document.getElementById('loader');
+        const container = document.getElementById('menu-container');
+        
+        if (!container) return;
+        
         try {
-            const response = await fetch(URL_SHEET);
+            // Intentar cargar desde CSV
+            const csvUrl = URL_SHEET.replace('/pubhtml', '/pub?output=csv');
+            const response = await fetch(csvUrl);
+            
+            if (!response.ok) throw new Error('No se pudo cargar el menú');
+            
             const data = await response.text();
             const items = data.split(/\r?\n/).filter(line => line.trim() !== "");
             
-            const container = document.getElementById('menu-container');
-            container.innerHTML = "";
-            document.getElementById('loader').classList.add('hidden');
-
-            items.forEach((item, idx) => {
-                container.innerHTML += `
-                    <div class="food-item" id="f-${idx}" onclick="toggleF(${idx})">
-                        <span>${item}</span>
-                        <i class="fas fa-times-circle hidden"></i>
-                    </div>`;
-            });
-        } catch (e) {
-            document.getElementById('loader').innerHTML = "❌ Error al cargar menú. Revisa la conexión.";
+            if (items.length === 0) throw new Error('Menú vacío');
+            
+            itemsMenuGlobal = items;
+            renderMenu(items);
+            
+        } catch (error) {
+            console.error('Error cargando menú:', error);
+            loader.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error al cargar menú. Usando menú de respaldo.';
+            
+            // Menú de respaldo en caso de error
+            const respaldo = ["🍗 Pollo asado", "🍚 Arroz blanco", "🥗 Ensalada mixta", "🍎 Jugo natural"];
+            itemsMenuGlobal = respaldo;
+            renderMenu(respaldo);
+            
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 1500);
         }
     }
-
-    function startApp(nombre) {
-        mision = nombre;
-        document.getElementById('titulo-mision').innerText = "Misión: " + nombre;
-        document.getElementById('label-mision').innerText = nombre;
-        showS('screen-calc');
+    
+    function renderMenu(items) {
+        const container = document.getElementById('menu-container');
+        const loader = document.getElementById('loader');
+        
+        if (!container) return;
+        
+        container.innerHTML = "";
+        loader.classList.add('hidden');
+        
+        items.forEach((item, idx) => {
+            const itemId = `f-${idx}`;
+            container.innerHTML += `
+                <div class="food-item" id="${itemId}" onclick="toggleFood(${idx})">
+                    <span><i class="fas fa-utensil-spoon"></i> ${item}</span>
+                    <i class="far fa-circle"></i>
+                </div>
+            `;
+        });
+    }
+    
+    // ==================== LÓGICA DE SELECCIÓN ====================
+    let selectedIndices = new Set();
+    
+    function toggleFood(index) {
+        const element = document.getElementById(`f-${index}`);
+        if (!element) return;
+        
+        const icon = element.querySelector('i:last-child');
+        const textoAlimento = itemsMenuGlobal[index];
+        
+        if (selectedIndices.has(index)) {
+            selectedIndices.delete(index);
+            element.classList.remove('selected');
+            if (icon) icon.className = 'far fa-circle';
+        } else {
+            selectedIndices.add(index);
+            element.classList.add('selected');
+            if (icon) icon.className = 'fas fa-check-circle';
+        }
+        
+        // Actualizar botón y mostrar impacto educativo
+        const btn = document.getElementById('btn-final');
+        const impactoDiv = document.getElementById('impacto-educativo');
+        const contenidoImpacto = document.getElementById('contenido-impacto');
+        
+        if (selectedIndices.size > 0) {
+            btn.innerText = "⚠️ Ver impacto de mi desperdicio";
+            btn.className = "btn btn-r";
+            
+            // Mostrar impacto educativo
+            impactoDiv.style.display = "block";
+            let impactHTML = "";
+            selectedIndices.forEach(idx => {
+                const alimento = itemsMenuGlobal[idx].toLowerCase();
+                let impactoEncontrado = false;
+                
+                // Buscar impacto por palabra clave
+                for (const [key, value] of Object.entries(IMPACTOS)) {
+                    if (alimento.includes(key)) {
+                        impactHTML += `
+                            <div style="margin: 10px 0; padding: 8px; background: white; border-radius: 8px;">
+                                <strong>${itemsMenuGlobal[idx]}:</strong><br>
+                                🩺 ${value.health}<br>
+                                🌍 ${value.env}
+                            </div>
+                        `;
+                        impactoEncontrado = true;
+                        break;
+                    }
+                }
+                
+                if (!impactoEncontrado) {
+                    impactHTML += `
+                        <div style="margin: 10px 0; padding: 8px; background: white; border-radius: 8px;">
+                            <strong>${itemsMenuGlobal[idx]}:</strong><br>
+                            🩺 Cada alimento contiene nutrientes esenciales para tu cuerpo<br>
+                            🌍 Al desperdiciarlo, también desperdiciamos agua y trabajo campesino
+                        </div>
+                    `;
+                }
+            });
+            contenidoImpacto.innerHTML = impactHTML;
+        } else {
+            btn.innerText = "✅ ¡Mi plato está limpio! ✅";
+            btn.className = "btn btn-v";
+            impactoDiv.style.display = "none";
+        }
+    }
+    
+    // ==================== VALIDACIÓN (CRÍTICA) ====================
+    function validar() {
+        // ⚠️ REGLA DE ORO: Solo recibe diploma si NO desperdició NADA
+        if (selectedIndices.size > 0) {
+            // Mostrar pantalla de fracaso
+            document.getElementById('cantidad-desperdicio').innerText = selectedIndices.size;
+            showScreen('screen-fail');
+        } else {
+            // Éxito: puede recibir diploma
+            showScreen('screen-success');
+        }
+    }
+    
+    // ==================== NAVEGACIÓN ====================
+    function startApp(nombreMision) {
+        misionActual = nombreMision;
+        selectedIndices.clear(); // Resetear selecciones
+        
+        document.getElementById('titulo-mision').innerHTML = `<i class="fas fa-flag-checkered"></i> Misión: ${nombreMision}`;
+        document.getElementById('label-mision').innerHTML = nombreMision;
+        
+        // Mensaje motivador según la misión
+        const mensajes = {
+            'Observadores': '👀 ¡Observa cada bocado! Pequeños cambios, grandes resultados.',
+            'Innovadores': '💡 Innova terminando todo tu plato. ¡Tú marcas la diferencia!',
+            'Creadores': '🎨 Crea un futuro sin desperdicio. Cada bocado cuenta.',
+            'Exploradores': '🧭 Explora el impacto real de tu alimentación. ¡Sé parte del cambio!',
+            'Aventureros': '🗺️ Aventureros no desperdician. Protegen el planeta.',
+            'Navegantes': '⛵ Navegantes hacia un mundo sostenible. ¡Lidera el camino!'
+        };
+        
+        const msgDiv = document.getElementById('mensaje-motivador');
+        const msgText = document.getElementById('mensaje-texto');
+        if (msgDiv && msgText && mensajes[nombreMision]) {
+            msgText.innerText = mensajes[nombreMision];
+            msgDiv.style.display = 'block';
+        }
+        
+        showScreen('screen-calc');
         cargarMenu();
     }
-
-    function toggleF(id) {
-        const el = document.getElementById(`f-${id}`);
-        el.classList.toggle('selected');
-        el.querySelector('i').classList.toggle('hidden');
-        
-        const count = document.querySelectorAll('.food-item.selected').length;
-        const btn = document.getElementById('btn-final');
-        if(count > 0) {
-            btn.innerText = "Registrar mi desperdicio";
-            btn.className = "btn btn-r";
-        } else {
-            btn.innerText = "¡Mi plato está limpio! ✅";
-            btn.className = "btn btn-v";
-        }
-    }
-
-    function validar() {
-        const count = document.querySelectorAll('.food-item.selected').length;
-        if(count > 0) showS('screen-fail');
-        else showS('screen-success');
-    }
-
-    function showS(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    function descargar() {
-        html2canvas(document.getElementById('diploma-area')).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'Diploma-Guardian.jpg';
-            link.href = canvas.toDataURL("image/jpeg");
-            link.click();
+    
+    function showScreen(screenId) {
+        const screens = ['screen-mision', 'screen-calc', 'screen-fail', 'screen-success'];
+        screens.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.classList.remove('active');
         });
+        const target = document.getElementById(screenId);
+        if (target) target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // ==================== DESCARGA DE DIPLOMA ====================
+    function descargarDiploma() {
+        const diplomaArea = document.getElementById('diploma-area');
+        
+        html2canvas(diplomaArea, {
+            scale: 2.5,
+            backgroundColor: '#FFFFFF',
+            logging: false
+        }).then(canvas => {
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            link.download = `Diploma-Guardian-${misionActual}-${timestamp}.jpg`;
+            link.href = canvas.toDataURL("image/jpeg", 0.95);
+            link.click();
+        }).catch(error => {
+            console.error('Error al generar diploma:', error);
+            alert('Hubo un problema al generar tu diploma. Intenta nuevamente.');
+        });
+    }
+    
+    // ==================== PANEL DE PROFESOR ====================
+    function showAdminConfig() {
+        const menuActual = itemsMenuGlobal.length > 0 ? itemsMenuGlobal.join(', ') : 'No cargado';
+        const instrucciones = `
+            📋 <strong>CÓMO ACTUALIZAR EL MENÚ:</strong><br><br>
+            1. Abre Google Sheets y crea una columna con los alimentos del día<br>
+            2. Ve a Archivo → Compartir → Publicar en la web<br>
+            3. Selecciona "CSV" como formato<br>
+            4. Copia el enlace y reemplázalo en la variable URL_SHEET<br><br>
+            <strong>Menú actual cargado:</strong><br>
+            ${menuActual}<br><br>
+            <i class="fas fa-tip"></i> Tip: Escribe un alimento por fila (ej: "🍗 Pechuga de pollo")
+        `;
+        
+        alert(instrucciones);
     }
 </script>
 </body>
